@@ -5,6 +5,7 @@ description = "[MVA] Inverse Problems and Imaging Project on Reverse-Time and Ki
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "ipympl>=0.10.0",
     "matplotlib>=3.10.8",
     "numpy>=2.2.6",
     "pandas>=2.3.3",
