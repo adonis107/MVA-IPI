@@ -1,4 +1,6 @@
 project files/*
 .venv/
+output/
+.DS_Store
 
 *copy*
