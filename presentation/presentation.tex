@@ -7,6 +7,7 @@
 \usepackage{mathrsfs}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{bm}
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{animate}
@@ -14,9 +15,9 @@
 \captionsetup[figure]{font=tiny}
 
 \usepackage[
-    backend=biber,
-    style=alphabetic,
-    sorting=ynt 
+backend=biber,
+style=alphabetic,
+sorting=ynt 
 ]{biblatex}
 \addbibresource{bibliography.bib}
 
@@ -34,17 +35,17 @@
 
 \title[IPI]{Inverse Problems and Imaging}
 \subtitle{Presentation - Project Assignment}
-\author[Jamal]{Adonis~JAMAL \quad Jean-Vincent~MARTINI\\Reverse-time and Kirchhoff migration}
+\author[Jamal, Martini]{Adonis~JAMAL \quad Jean-Vincent~MARTINI\\Reverse-time and Kirchhoff migration}
 \institute[ENS]{Ecole Normale Supérieure Paris-Saclay\\MVA 2025-2026}
 \date[March 27th 2026]{March 27th, 2026}
 
 \titlegraphic{
-    \centering
-    \includegraphics[height=1cm]{img/logo_ens-ps.png}
-    \hspace{1cm}
-    \includegraphics[height=1.2cm]{img/logo_mva.jpg}
-    \hspace{1cm}
-    \includegraphics[height=1cm]{img/Logo_CentraleSupelec.svg.png}
+\centering
+\includegraphics[height=1cm]{img/logo_ens-ps.png}
+\hspace{1cm}
+\includegraphics[height=1.2cm]{img/logo_mva.jpg}
+\hspace{1cm}
+\includegraphics[height=1cm]{img/Logo_CentraleSupelec.svg.png}
 }
 
 \begin{document}
@@ -52,36 +53,323 @@
 \frame{\titlepage}
 
 
-
-
 % ==============================================================================
-% SECTION : SECTION
+% SECTION 1: INTRODUCTION
 % ==============================================================================
-\section{section}
-\subsection{subsection}
-\begin{frame}{Frame}
-    \cite{main}
+
+\begin{frame}{Overview and Objectives}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\textbf{Goal:} Reconstruct the location of a point-like reflector from time-harmonic or broadband measurement data in 2D, using synthetic array data.
+
+\bigskip
+\textbf{Configurations studied:}
+\begin{itemize}
+  \item \textbf{Full aperture}: circular array of $N$ transducers
+  \item \textbf{Partial aperture}: linear array along the $x$-axis
+  \item \textbf{Time-dependent}: broadband signal emission
+  \item \textbf{Noisy setting}: additive complex Gaussian noise
+\end{itemize}
+\end{column}
+\begin{column}{0.42\textwidth}
+\textbf{Methods compared:} Reverse-Time (RT) migration, Kirchhoff Migration (KM), MUSIC-type. 
+
+\bigskip
+\textbf{Workflow:}
+\begin{enumerate}
+  \item Derive the Green's function and generate synthetic data via Born approximation
+  \item Define and implement RT, KM, MUSIC functionals
+  \item Analyze results
+  \item Study stability under noise (Monte Carlo)
+\end{enumerate}
+\end{column} 
+\end{columns}
 \end{frame}
 
 
+% ==============================================================================
+% SECTION 2: THEORETICAL TOOLS
+% ==============================================================================
+
+\begin{frame}{Green's Function and Data Model}
+\textbf{Green's function.} We assume propagation speed $c_0 = 1$. The 2D homogeneous Green's function $\hat{G}_0(\omega, x, y)$ satisfies:
+$$\Delta_x \hat{G}_0 + \omega^2 \hat{G}_0 = -\delta(x-y), \quad x \in \mathbb{R}^2$$
+with the Sommerfeld radiation condition. It is given explicitly by:
+$$\hat{G}_0(\omega, x, y) = \frac{i}{4} H_0^{(1)}(\omega |x-y|)$$
+where $H_0^{(1)}(s) = J_0(s) + iY_0(s)$ is the Hankel function of the first kind.
+
+\bigskip
+\textbf{Data model (Born approximation).} For a point-like reflector at $\bm{x}_{\mathrm{ref}}$, the data matrix entry for receiver $r$ and source $s$ is:
+$$\hat{u}_{rs}(\omega) = \omega^2 \hat{G}_0(\omega, \bm{x}_r, \bm{x}_{\mathrm{ref}})\, \hat{G}_0(\omega, \bm{x}_{\mathrm{ref}}, \bm{x}_s)$$
+which can be written in matrix form as:
+$$\hat{U}(\omega) = -\frac{\omega^2}{16}\, \mathbf{v}\mathbf{v}^T, \quad v_t = H_0^{(1)}(\omega|\bm{x}_t - \bm{x}_{\mathrm{ref}}|)$$
+\end{frame}
+
+\begin{frame}{RT, KM and MUSIC Imaging Functionals}
+\textbf{Reverse-Time (RT) migration:}
+$$\mathcal{I}_{RT}(\bm{x}) = \frac{1}{2\pi}\int_{-\infty}^{\infty} d\omega \sum_{r,s} \overline{\hat{G}_0(\omega, \bm{x}, \bm{x}_r)}\,\hat{u}_{rs}(\omega)\,\overline{\hat{G}_0(\omega, \bm{x}_s, \bm{x})}$$
+
+\textbf{Kirchhoff Migration (KM):} from RT, with $\hat{G}_0(\omega,\bm{x},\bm{y})\approx e^{i\omega\mathcal{T}(\bm{x},\bm{y})}$:
+$$\mathcal{I}_{KM}(\bm{x}) = \frac{1}{2\pi}\int_{-\infty}^{\infty} d\omega \sum_{r,s} e^{-i\omega|\bm{x}-\bm{x}_r|}\,\hat{u}_{rs}(\omega)\,e^{-i\omega|\bm{x}_s - \bm{x}|}$$
+
+\textbf{MUSIC} (partial aperture, noise-subspace variant):
+$$\mathcal{I}_{MU}(\bm{x}) = \frac{1}{1 - |\langle \hat{g}(\omega, \bm{x}),\, v_1\rangle|^2}$$
+where $\hat{g}(\omega,\bm{x}) = (\hat{G}_0(\omega, \bm{x}, x_r))_{r=1,\dots,N}$ and $v_1$ is the first singular vector of $\hat{U}$.
+
+\textbf{Theoretical focal spots:} Full aperture $\sim J_0^2(\omega|x-x_{\mathrm{ref}}|)$; Partial aperture: $\operatorname{sinc}^2$ in cross-range, Fresnel integral in range.
+\end{frame}
+
+
+% ==============================================================================
+% SECTION 3: RESULTS - FULL APERTURE
+% ==============================================================================
+
+\begin{frame}{Full Aperture -- RT, KM and Theoretical Focal Spot}
+\textbf{Setup:} $N=100$ transducers on a circle, $R_0=100$, $\omega=2\pi$, $\bm{x}_{\mathrm{ref}}=(10,20)$.
+
+\begin{columns}
+\begin{column}{0.58\textwidth}
+\includegraphics[width=\textwidth]{../figures/Full_Aperture.png}
+\end{column}
+\begin{column}{0.40\textwidth}
+\small
+\begin{itemize}
+  \item RT and KM images are very similar; minor discrepancies come from the approximation used in KM.
+  \item The theoretical $J_0^2$ focal spot differs noticeably: it is derived under the asymptotic limit $R_0\to\infty$, $N\to\infty$.
+  \item Near the reflector, all three profiles agree qualitatively.
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Full Aperture -- Multiple Reflector Positions}
+\textbf{Effect of reflector position:} reflector moved to $(0,0)$, $(0,100)$, $(100,0)$.
+
+\begin{center}
+\includegraphics[width=0.82\textwidth]{../figures/Full_Aperture_Multiple_Reflectors.png}
+\end{center}
+
+\small As the reflector approaches the array boundary, the asymptotic assumptions break down and the discrepancy between RT/KM and the theoretical $J_0^2$ profile becomes more pronounced.
+\end{frame}
+
+\begin{frame}{Full Aperture -- Far-Field Regime}
+\textbf{Far-field regime:} $R_0 = 1000$, $N = 2000$.
+
+\begin{center}
+\includegraphics[width=0.82\textwidth]{../figures/Full_Aperture_Far_Field.png}
+\end{center}
+
+\small With a much larger array and many more transducers, the RT and KM functionals converge closely to the theoretical $J_0^2$ focal spot, confirming the validity of the asymptotic formula in the appropriate regime.
+\end{frame}
+
+
+% ==============================================================================
+% SECTION 4: RESULTS - PARTIAL APERTURE
+% ==============================================================================
+
+\begin{frame}{Partial Aperture -- RT, KM and MUSIC}
+\textbf{Setup:} $N=100$ transducers on a linear array, $R_0=100$, $\omega=2\pi$, $\bm{x}_{\mathrm{ref}}=(10,20)$.
+
+\begin{columns}
+\begin{column}{0.56\textwidth}
+\includegraphics[width=\textwidth]{../figures/Partial_Aperture.png}
+\end{column}
+\begin{column}{0.42\textwidth}
+\small
+\begin{itemize}
+  \item RT, KM and MUSIC closely resemble each other.
+  \item \textbf{Cross-range ($x$):} RT reproduces the main peak and secondary lobes; extra lobes arise from finite-aperture and discrete-sampling effects.
+  \item \textbf{Range ($z$):} a mirror image appears at $-z_{\mathrm{ref}}$ due to the linear geometry (transducers on the $x$-axis cannot distinguish $z$ from $-z$).
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Partial Aperture -- Influence of Array Length $R_0$}
+\begin{columns}
+\begin{column}{0.56\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/Partial_Aperture_Multiple_R0.png}
+\end{center}
+\end{column}
+
+\begin{column}{0.42\textwidth}
+\textbf{Varying $R_0$:} smaller aperture $\Rightarrow$ coarser cross-range resolution (larger $r_c = \lambda|x_{\mathrm{ref}}|/R_0$).
+
+\bigskip
+\small As $R_0$ decreases, the focal spot widens in the cross-range direction, consistent with the theoretical $\operatorname{sinc}^2$ prediction. The range resolution is unaffected by $R_0$.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Partial Aperture -- Multiple Reflector Positions}
+\begin{columns}
+\begin{column}{0.56\textwidth}
+\begin{center}
+\includegraphics[width=\textwidth]{../figures/Partial_Aperture_Multiple_Reflectors.png}
+\end{center}
+\end{column}
+\begin{column}{0.42\textwidth}
+\textbf{Varying $\bm{x}_{\mathrm{ref}}$:} moving the reflector further from the array increases the range and degrades cross-range resolution.
+
+\bigskip
+\small The focal spot characteristics scale with the stand-off distance $|x_{\mathrm{ref}}|$, in agreement with the theoretical expressions for $r_c$ and $r_l$.
+\end{column}
+\end{columns}
+\end{frame}
+
+
+% ==============================================================================
+% SECTION 5: RESULTS - TIME-DEPENDENT
+% ==============================================================================
+
+\begin{frame}{Time-Dependent (Broadband) -- Partial Aperture}
+\textbf{Setup:} $N=40$, $R_0=20$, broadband signal $\hat{f}(\omega) = \mathbf{1}_{[\omega_0-B,\,\omega_0+B]}(\omega)$, $\omega_0=2\pi$, $B=0.05\omega_0$, $\bm{x}_{\mathrm{ref}}=(0,100)$.
+
+\begin{columns}
+\begin{column}{0.56\textwidth}
+\includegraphics[width=\textwidth]{../figures/Time_Dependent.png}
+\end{column}
+\begin{column}{0.42\textwidth}
+\small
+\begin{itemize}
+  \item The focal spot is significantly more localized than in the monochromatic case: broader frequency content improves coherent focusing.
+  \item Cross-range: RT matches the $\operatorname{sinc}^2$ main peak (secondary lobes not captured due to discrete/finite array).
+  \item Range: the profile is consistent with the theoretical $|\operatorname{sinc}(2B|z-z_{\mathrm{ref}}|)|$ prediction.
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Time-Dependent -- Influence of Bandwidth $B$}
+\begin{columns}
+\begin{column}{0.56\textwidth}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/Time_Dependent_Multiple_Bandwidths.png}
+\end{center}
+\end{column}
+\begin{column}{0.42\textwidth}
+\textbf{Varying bandwidth $B$:} wider bandwidth $\Rightarrow$ sharper range resolution ($r_l \propto 1/B$), cross-range resolution unchanged.
+
+\bigskip
+\small Increasing $B$ dramatically reduces the range sidelobe level and sharpens the range profile, confirming the $\operatorname{sinc}$ dependence on bandwidth.
+\end{column}
+\end{columns}
+\end{frame}
+
+
+% ==============================================================================
+% SECTION 6: STABILITY / NOISE
+% ==============================================================================
+
+\begin{frame}{Stability -- Noisy Model}
+\textbf{Noise model.} The recorded signals are perturbed by complex Gaussian noise:
+$$\hat{u}_{rs}^{\mathrm{noisy}}(\omega) = \hat{u}_{rs}(\omega) + W_{rs}^{(1)}(\omega) + i\, W_{rs}^{(2)}(\omega)$$
+where $W_{rs}^{(1)}, W_{rs}^{(2)} \sim \mathcal{N}(0,\, \sigma^2/2)$ i.i.d.
+
+\bigskip
+\textbf{Configurations revisited:}
+\begin{itemize}
+  \item Full aperture (RT \& KM)
+  \item Partial aperture (RT, KM \& noise-subspace MUSIC)
+  \item Time-dependent broadband (RT \& KM)
+\end{itemize}
+
+\bigskip
+\textbf{Analysis:} For each configuration, we plot images at increasing $\sigma$, then quantify localization error via Monte Carlo simulation (multiple noise realizations).
+
+\bigskip
+\textit{Note on MUSIC:} we use the noise-subspace variant $\mathcal{I}_{MU}(\bm{x}) = 1/(1-|\langle\hat{g},v_1\rangle|^2)$ to expose its super-resolution behaviour and its sensitivity to noise.
+\end{frame}
+
+\begin{frame}{Stability -- Full Aperture under Noise}
+
+\begin{center}
+\includegraphics[width=0.65\textwidth]{../figures/Noise_Full_Aperture.png}
+\end{center}
+
+\small RT and KM both degrade gracefully as $\sigma$ increases. Coherent integration over many transducer pairs provides a natural averaging effect that partially mitigates noise.
+\end{frame}
+
+\begin{frame}{Stability -- Partial Aperture under Noise}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{../figures/Noise_Partial_Aperture.png}
+\end{center}
+
+\small RT and KM remain robust for moderate noise levels. The noise-subspace MUSIC functional is sharper at low noise but degrades more abruptly: once the noise level is sufficient to perturb the dominant singular vector $v_1$, the localization quality deteriorates rapidly.
+\end{frame}
+
+\begin{frame}{Stability -- Time-Dependent Broadband under Noise}
+
+\begin{center}
+\includegraphics[width=0.88\textwidth]{../figures/Noise_Time_Dependent.png}
+\end{center}
+
+\small The broadband RT functional retains a well-defined peak even at elevated noise levels, benefiting from frequency diversity in addition to spatial averaging.
+\end{frame}
+
+\begin{frame}{Stability -- Monte Carlo Analysis: RT vs.\ MUSIC}
+\textbf{RMSE of localization vs.\ noise level $\sigma$} (multiple realizations, partial aperture).
+
+\bigskip
+\begin{itemize}
+  \item \textbf{RT:} localization error grows slowly and steadily with $\sigma$. Coherent back-propagation integrates over all source--receiver pairs, averaging out random noise contributions.
+  \item \textbf{MUSIC:} error remains very low for small $\sigma$ (super-resolution), then rises sharply beyond a threshold. Once noise corrupts the dominant singular vector $v_1$, the functional fails abruptly.
+\end{itemize}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\includegraphics[width=\textwidth]{../figures/Stability_vs_Noise.png}
+\end{column}
+\begin{column}{0.48\textwidth}
+
+\bigskip
+$\Rightarrow$ RT is more robust; MUSIC offers higher precision at low noise but is fragile.
+\end{column}
+\end{columns}
+\end{frame}
+
+
+% ==============================================================================
+% SECTION: CONCLUSION
+% ==============================================================================
+
+\begin{frame}{Conclusion}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\textbf{Summary of findings:}
+\small
+\begin{itemize}
+  \item \textbf{Full aperture:} RT and KM agree closely; both approach the theoretical $J_0^2$ focal spot as $R_0,N\to\infty$.
+  \item \textbf{Partial aperture:} linear geometry introduces a mirror artifact in range; cross-range resolution scales as $r_c=\lambda|x_{\mathrm{ref}}|/R_0$. MUSIC provides a sharper image.
+  \item \textbf{Broadband:} increased bandwidth drastically improves range resolution ($r_l \propto 1/B$), consistent with $\operatorname{sinc}$ theory.
+  \item \textbf{Noise:} RT migration degrades gracefully; MUSIC is precision-first but collapses beyond a noise threshold.
+\end{itemize}
+\end{column}
+\begin{column}{0.43\textwidth}
+\textbf{Perspectives:}
+\small
+\begin{itemize}
+  \item Extension to heterogeneous or anisotropic media.
+  \item Advanced regularization to stabilize MUSIC at high noise.
+  \item Investigation of multiple reflectors and mutual interference.
+  \item Time-reversal approaches in random media.
+\end{itemize}
+
+\bigskip
+\textbf{Key take-away:} Array geometry, bandwidth and noise level are the three dominant factors controlling resolution and stability of RT/KM imaging functionals.
+\end{column}
+\end{columns}
+\end{frame}
 
 
 % ==============================================================================
 % SECTION : BIBLIOGRAPHY
 % ==============================================================================
-\subsection{Bibliography}
 \begin{frame}[allowframebreaks]{Bibliography}
-    \frametitle{Bibliography}
-    \printbibliography[heading=none]
-\end{frame}
-
-
-% ==============================================================================
-% SECTION : APPENDIX
-% ==============================================================================
-\subsection{Appendix}
-\begin{frame}{Appendix}
-   
+\frametitle{Bibliography}
+Ammari et al., \textit{Mathematical and Statistical Methods for Multistatic Imaging}, Springer, 2013.
 \end{frame}
 
 
