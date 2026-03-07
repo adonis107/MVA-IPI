@@ -33,7 +33,7 @@ sorting=ynt
 \setbeamercolor{palette quaternary}{bg=CSgrey,fg=white}
 \setbeamercolor{structure}{fg=CSgrey}
 
-\title[IPI]{Inverse Problems and Imaging}
+\title[Inverse Problems and Imaging]{Inverse Problems and Imaging}
 \subtitle{Presentation - Project Assignment}
 \author[Jamal, Martini]{Adonis~JAMAL \quad Jean-Vincent~MARTINI\\Reverse-time and Kirchhoff migration}
 \institute[ENS]{Ecole Normale Supérieure Paris-Saclay\\MVA 2025-2026}
@@ -57,33 +57,55 @@ sorting=ynt
 % SECTION 1: INTRODUCTION
 % ==============================================================================
 
+% \begin{frame}{Overview and Objectives}
+% \begin{columns}
+% \begin{column}{0.55\textwidth}
+% \textbf{Goal:} Reconstruct the location of a point-like reflector from time-harmonic or broadband measurement data in 2D, using synthetic array data.
+% 
+% \bigskip
+% \textbf{Configurations studied:}
+% \begin{itemize}
+%   \item \textbf{Full aperture}: circular array of $N$ transducers
+%   \item \textbf{Partial aperture}: linear array along the $x$-axis
+%   \item \textbf{Time-dependent}: broadband signal emission
+%   \item \textbf{Noisy setting}: additive complex Gaussian noise
+% \end{itemize}
+% \end{column}
+% \begin{column}{0.42\textwidth}
+% \textbf{Methods compared:} Reverse-Time (RT) migration, Kirchhoff Migration (KM), MUSIC-type. 
+% 
+% \bigskip
+% \textbf{Workflow:}
+% \begin{enumerate}
+%   \item Derive the Green's function and generate synthetic data via Born approximation
+%   \item Define and implement RT, KM, MUSIC functionals
+%   \item Analyze results
+%   \item Study stability under noise (Monte Carlo)
+% \end{enumerate}
+% \end{column} 
+% \end{columns}
+% \end{frame}
+
 \begin{frame}{Overview and Objectives}
-\begin{columns}
-\begin{column}{0.55\textwidth}
-\textbf{Goal:} Reconstruct the location of a point-like reflector from time-harmonic or broadband measurement data in 2D, using synthetic array data.
+  \begin{block}{Goal}
+    Reconstruct the location of a point-like reflector from time-harmonic or broadband measurement data in 2D, using synthetic array data.
+  \end{block}
 
-\bigskip
-\textbf{Configurations studied:}
-\begin{itemize}
-  \item \textbf{Full aperture}: circular array of $N$ transducers
-  \item \textbf{Partial aperture}: linear array along the $x$-axis
-  \item \textbf{Time-dependent}: broadband signal emission
-  \item \textbf{Noisy setting}: additive complex Gaussian noise
-\end{itemize}
-\end{column}
-\begin{column}{0.42\textwidth}
-\textbf{Methods compared:} Reverse-Time (RT) migration, Kirchhoff Migration (KM), MUSIC-type. 
+  \textbf{Configurations studied:}
+  \begin{itemize}
+    \item \textbf{Full aperture}: circular array of $N$ transducers
+    \item \textbf{Partial aperture}: linear array along the $x$-axis
+    \item \textbf{Time-dependent}: broadband signal emission
+    \item \textbf{Noisy setting}: additive complex Gaussian noise
+  \end{itemize}
 
-\bigskip
-\textbf{Workflow:}
-\begin{enumerate}
-  \item Derive the Green's function and generate synthetic data via Born approximation
-  \item Define and implement RT, KM, MUSIC functionals
-  \item Analyze results
-  \item Study stability under noise (Monte Carlo)
-\end{enumerate}
-\end{column} 
-\end{columns}
+  \begin{block}{Workflow}
+    \begin{enumerate}
+      \item Derive the Green's function and generate synthetic data via Born approximation.
+      \item Define, implement and analyze Reverse-Time (RT) migration, Kirchhoff Migration (KM), MUSIC-type functionals.
+      \item Study stability under noise (Monte Carlo).
+    \end{enumerate}
+  \end{block}
 \end{frame}
 
 
