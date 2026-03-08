@@ -135,7 +135,7 @@ $$\mathcal{I}_{RT}(\bm{x}) = \frac{1}{2\pi}\int_{-\infty}^{\infty} d\omega \sum_
 $$\mathcal{I}_{KM}(\bm{x}) = \frac{1}{2\pi}\int_{-\infty}^{\infty} d\omega \sum_{r,s} e^{-i\omega|\bm{x}-\bm{x}_r|}\,\hat{u}_{rs}(\omega)\,e^{-i\omega|\bm{x}_s - \bm{x}|}$$
 
 \textbf{MUSIC} (partial aperture, noise-subspace variant):
-$$\mathcal{I}_{MU}(\bm{x}) = \frac{1}{1 - |\langle \hat{g}(\omega, \bm{x}),\, v_1\rangle|^2}$$
+$$\mathcal{I}_{MU}(\bm x) = |\langle \hat{g}(\omega, \bm x), v_1 \rangle|^2$$
 where $\hat{g}(\omega,\bm{x}) = (\hat{G}_0(\omega, \bm{x}, x_r))_{r=1,\dots,N}$ and $v_1$ is the first singular vector of $\hat{U}$.
 
 \textbf{Theoretical focal spots:} Full aperture $\sim J_0^2(\omega|x-x_{\mathrm{ref}}|)$; Partial aperture: $\operatorname{sinc}^2$ in cross-range, Fresnel integral in range.
