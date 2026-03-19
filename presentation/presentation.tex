@@ -10,6 +10,7 @@
 \usepackage{amssymb}
 \usepackage{bm}
 \usepackage{booktabs}
+\usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{caption}
 \usepackage{graphicx}
@@ -70,7 +71,7 @@
 \title{Inverse Problems and Imaging}
 \subtitle{Reverse-Time and Kirchhoff Migration}
 \author{Adonis~Jamal \quad Jean-Vincent~Martini}
-\institute{\'Ecole Normale Sup\'erieure Paris-Saclay --- MVA 2025--2026}
+\institute{\'Ecole Normale Sup\'erieure Paris-Saclay --- MVA 2025-2026}
 \date{March 27th, 2026}
 
 \titlegraphic{%
@@ -188,7 +189,7 @@
 \begin{frame}{Imaging Functionals: RT, KM and MUSIC}
   \small
 
-  \hspace*{-0.35cm}
+  \hspace*{-0.45cm}
   \begin{minipage}{\dimexpr\textwidth+0.7cm\relax}
   \setlength{\columnsep}{0.5pt}
   \begin{columns}[T]
@@ -196,48 +197,42 @@
     \begin{tcolorbox}[keybox, title=Reverse-Time (RT) Migration, top=2pt, bottom=2pt]
       \footnotesize
       Back-propagate using the \emph{exact} Green's function:
-      \vspace{-0.1cm} 
+      \vspace{-0.22cm} 
       \begin{equation*}
-        \tiny
-      \begin{aligned}
-        \mathcal{I}_{RT}(\bm{x}) = \frac{1}{2\pi}\!\int\!\! d\omega \sum_{r,s}
-         \overline{\hat{G}_0(\omega, \bm{x}, \bm{x}_r)}\,\hat{u}_{rs}(\omega)
-        \times\overline{\hat{G}_0(\omega, \bm{x}_s, \bm{x})}
-      \end{aligned}
+        \scriptsize
+        \begin{aligned}
+          \mathcal{I}_{RT}(\bm{x}) = \frac{1}{2\pi}\!\int\!\! d\omega \sum_{r,s} \overline{\hat{G}_0(\omega, \bm{x}, \bm{x}_r)}\,\hat{u}_{rs}(\omega) \overline{\hat{G}_0(\omega, \bm{x}_s, \bm{x})}
+        \end{aligned}
       \end{equation*}
     \end{tcolorbox}
 
-    \begin{tcolorbox}[warnbox, title=Kirchhoff Migration (KM), top=2pt, bottom=2pt]
+    \begin{tcolorbox}[warnbox, title=Kirchhoff Migration (KM), top=2pt, bottom=1pt]
       \footnotesize
       Approximate $\hat{G}_0 \approx e^{i\omega\mathcal{T}}$ (travel-time only):
-      \vspace{-0.1cm}
+      \vspace{-0.22cm}
       \begin{equation*}
-        \tiny
-      \begin{aligned}
-        \mathcal{I}_{KM}(\bm{x}) = \frac{1}{2\pi}\!\int\!\! d\omega \sum_{r,s}
-         e^{-i\omega|\bm{x}-\bm{x}_r|}\,\hat{u}_{rs}(\omega)\,e^{-i\omega|\bm{x}_s - \bm{x}|}
-      \end{aligned}
+        \scriptsize
+        \begin{aligned}
+          \mathcal{I}_{KM}(\bm{x}) = \frac{1}{2\pi}\!\int\!\! d\omega \sum_{r,s} e^{-i\omega|\bm{x}-\bm{x}_r|}\,\hat{u}_{rs}(\omega)\,e^{-i\omega|\bm{x}_s - \bm{x}|}
+        \end{aligned}
       \end{equation*}
     \end{tcolorbox}
 
-
-    \begin{tcolorbox}[resultbox, title=MUSIC (Signal-Subspace Projection), top=2pt, bottom=2pt]
+    \begin{tcolorbox}[resultbox, title=MUSIC (Signal-Subspace Projection), top=1pt, bottom=2pt]
       \footnotesize
       Project onto the signal subspace:
       \vspace{-0.15cm}
-      {\tiny
-      $$\mathcal{I}_{MU}(\bm{x}) = |\langle \hat{g}(\omega, \bm{x}),\, v_1 \rangle|^2$$
-      }
+      {\scriptsize\[\mathcal{I}_{MU}(\bm{x}) = |\langle \hat{g}(\omega, \bm{x}),\, v_1 \rangle|^2\]\vspace{-0.5em}}
       {\scriptsize where $\hat{g} = (\hat{G}_0(\omega, \bm{x}, x_r))_{r=1,\dots,N}$, $v_1$: first singular vector of $\hat{U}$.}
     \end{tcolorbox}
   \end{column}
 
-  \begin{column}{0.35\textwidth}
+  \begin{column}{0.37\textwidth}
     \begin{tcolorbox}[keybox, title=, top=2pt, bottom=2pt]
       \scriptsize
       \textcolor{greenok}{\textbf{+}} Physically exact\\
       \textcolor{greenok}{\textbf{+}} Robust to noise (coherent averaging)\\
-      \textcolor{CSred}{\textbf{--}} Requires exact $\hat{G}_0$ (costly) \\
+      \textcolor{CSred}{\textbf{--}} Requires exact $\hat{G}_0$ (costly)\\
       \textcolor{CSred}{\textbf{--}} More costly than KM
     \end{tcolorbox}
 
@@ -245,11 +240,10 @@
     \begin{tcolorbox}[warnbox, title=, top=2pt, bottom=2pt] 
       \scriptsize
       \textcolor{greenok}{\textbf{+}} Computationally cheap\\
-      \textcolor{greenok}{\textbf{+}} Similar output to RT \\
+      \textcolor{greenok}{\textbf{+}} Similar output to RT\\
       \textcolor{CSred}{\textbf{--}} Drops amplitude information\\
       \textcolor{CSred}{\textbf{--}} Fails in complex media
     \end{tcolorbox}
-
 
     \begin{tcolorbox}[resultbox, title=, top=2pt, bottom=2pt]
       \scriptsize
@@ -265,9 +259,9 @@
 
 \begin{frame}{Theoretical Focal Spots -- Full Aperture}
   \small
-  \vspace{-0.2cm}
+  \vspace{-0.1cm}
   \begin{columns}
-  \begin{column}{0.38\textwidth}
+  \begin{column}{0.35\textwidth}
     \begin{center}
     \begin{tikzpicture}[>=Stealth, font=\scriptsize, scale=0.7]
       % Circular array
@@ -287,24 +281,22 @@
     \end{tikzpicture}
     \end{center}
   \end{column}
-  \begin{column}{0.60\textwidth}
+
+  \begin{column}{0.63\textwidth}
     \begin{tcolorbox}[keybox, title=Derivation, top=2pt, bottom=2pt]
       \scriptsize
       As $N\!\to\!\infty$, the sum becomes an integral over $\Gamma_{R_0}$:
-      \vspace{-0.15cm}
       $$\mathcal{I}(\bm{x})\propto
       \left|\!\int_{\Gamma_{R_0}}\!\!
       \overline{H_0^{(1)}\!\big(\omega|\bm{x}\!-\!\bm{y}|\big)}\,
       H_0^{(1)}\!\big(\omega|\bm{x}_{\mathrm{ref}}\!-\!\bm{y}|\big)
       \,d\sigma(\bm{y})\right|^2$$
-      \vspace{-0.3cm}
 
       Far-field ($R_0\!\gg\!1$): phase difference $\approx \hat{\bm{y}}\cdot(\bm{x}-\bm{x}_{\mathrm{ref}})$.
     \end{tcolorbox}
   \end{column}
   \end{columns}
 
-  \vspace{-0.05cm}
   \begin{tcolorbox}[stressbox, top=2pt, bottom=2pt]
     \scriptsize
     With $\bm{y}=R_0(\cos\theta,\sin\theta)$ and $\Delta\bm{x}=\bm{x}-\bm{x}_{\mathrm{ref}}$, the angular integral yields:
@@ -313,7 +305,6 @@
     = 2\pi\, J_0(\omega|\Delta\bm{x}|)$$
   \end{tcolorbox}
 
-  \vspace{-0.1cm}
   \begin{tcolorbox}[resultbox, title=Isotropic focal spot]
     \footnotesize
     $$\boxed{\;\mathcal{I}(\bm{x}) \;\sim\; J_0^2\!\bigl(\omega|\bm{x}-\bm{x}_{\mathrm{ref}}|\bigr)\;}$$
@@ -370,9 +361,7 @@
   \begin{minipage}[t]{0.48\textwidth}
     \begin{tcolorbox}[stressbox, title=Range ($z$), top=2pt, bottom=2pt]
       \scriptsize
-      $$\mathcal{I}(z) \sim \left|\!\int_0^1\!\! e^{-i\frac{\pi}{2}s^2\frac{|z-z_{\mathrm{ref}}|}{r_l}}\,ds\right|^2$$
-      \vspace{-0.25cm}
-
+      {\scriptsize\[\mathcal{I}(z) \sim \smash{\left|\int_0^1 e^{-i\frac{\pi}{2}s^2\frac{|z-z_{\mathrm{ref}}|}{r_l}}\,ds\right|^2}\]\vspace{-1.2em}}
       with resolution:
       \vspace{-0.1cm}
       $$r_l = \frac{2\lambda\,|\bm{x}_{\mathrm{ref}}|^2}{R_0^2}$$
@@ -406,7 +395,7 @@
   \begin{column}{0.38\textwidth}
     \begin{tcolorbox}[keybox, title=Observations]
       \scriptsize
-      \begin{itemize}\setlength\itemsep{2pt}
+      \begin{itemize}[leftmargin=0.5em, label=\textbullet]\setlength\itemsep{2pt}
         \item RT and KM images are very similar; KM shows minor discrepancies.
         \item Theoretical $J_0^2$ focal spot differs noticeably: derived under $R_0\!\to\!\infty$, $N\!\to\!\infty$.
         \item Near the reflector, all three profiles agree qualitatively despite the missing circular patterns.
@@ -472,7 +461,7 @@
   \begin{column}{0.36\textwidth}
     \begin{tcolorbox}[keybox, title=Observations]
       \scriptsize
-      \begin{itemize}\setlength\itemsep{1pt}
+      \begin{itemize}[leftmargin=0.5em, label=\textbullet]\setlength\itemsep{2pt}
         \item RT, KM and MUSIC closely resemble each other.
         \item \textbf{Cross-range ($x$):} RT reproduces the main peak and secondary lobes.
         \item \textbf{Range ($z$):} a \alert{mirror image} appears at $-z_{\mathrm{ref}}$ (linear geometry cannot distinguish $z$ from $-z$).
@@ -519,7 +508,7 @@
     \begin{tcolorbox}[keybox, title=Effect of reflector distance]
       \footnotesize
       Moving the reflector \textbf{further from the array}:
-      \begin{itemize}\setlength\itemsep{2pt}
+      \begin{itemize}[leftmargin=0.5em, label=\textbullet]\setlength\itemsep{2pt}
         \item Increases the stand-off distance
         \item Degrades cross-range resolution
       \end{itemize}
@@ -553,7 +542,7 @@
   \begin{column}{0.44\textwidth}
     \begin{tcolorbox}[keybox, title=Broadband advantage]
       \scriptsize
-      \begin{itemize}\setlength\itemsep{2pt}
+      \begin{itemize}[leftmargin=0.5em, label=\textbullet]\setlength\itemsep{2pt}
         \item Focal spot is \textbf{significantly more localized} than monochromatic.
         \item Cross-range: RT matches the $\operatorname{sinc}^2$ main peak and secondary lobes.
         \item Range: profile consistent with $|\operatorname{sinc}(2B|z-z_{\mathrm{ref}}|)|$ prediction.
@@ -580,7 +569,7 @@
   \begin{column}{0.54\textwidth}
     \begin{tcolorbox}[keybox, title=Bandwidth vs.\ Resolution]
       \footnotesize
-      \begin{itemize}\setlength\itemsep{3pt}
+      \begin{itemize}[leftmargin=0.5em, label=\textbullet]\setlength\itemsep{3pt}
         \item \textbf{Range resolution:} $r_l \propto 1/B$
         \item \textbf{Cross-range resolution:} unchanged
       \end{itemize}
@@ -730,7 +719,7 @@
   \scriptsize
   \vspace{-0.1cm}
   \begin{tcolorbox}[keybox, title=Summary of Findings, top=2pt, bottom=2pt]
-    \begin{itemize}\setlength\itemsep{1pt}
+    \begin{itemize}[leftmargin=0.5em, label=\textbullet]\setlength\itemsep{1.5pt}
       \item \textbf{Full aperture:} RT and KM agree closely; both approach theoretical $J_0^2$ spot as $R_0,N\!\to\!\infty$.
       \item \textbf{Partial aperture:} linear geometry $\Rightarrow$ mirror artifact in range; cross-range resolution $r_c\!=\!\lambda|x_{\mathrm{ref}}|/R_0$. MUSIC provides sharper image.
       \item \textbf{Broadband:} increased bandwidth drastically improves range resolution ($r_l \!\propto\! 1/B$), consistent with $\operatorname{sinc}$ theory.
@@ -740,7 +729,7 @@
 
 
   \begin{tcolorbox}[warnbox, title=Perspectives, top=2pt, bottom=2pt]
-    \begin{itemize}\setlength\itemsep{1pt}
+    \begin{itemize}[leftmargin=0.5em, label=\textbullet]\setlength\itemsep{1.5pt}
       \item Extension to heterogeneous or anisotropic media
       \item Advanced regularization to stabilize MUSIC at high noise
       \item Multiple reflectors and mutual interference
