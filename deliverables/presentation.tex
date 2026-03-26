@@ -725,10 +725,10 @@
       \item \textbf{Full aperture:} RT and KM agree closely; both approach theoretical $J_0^2$ spot as $R_0,N\!\to\!\infty$.
       \item \textbf{Partial aperture:} linear geometry $\Rightarrow$ mirror artifact in range; cross-range resolution $r_c\!=\!\lambda|x_{\mathrm{ref}}|/R_0$. MUSIC provides sharper image.
       \item \textbf{Broadband:} increased bandwidth drastically improves range resolution ($r_l \!\propto\! 1/B$), consistent with $\operatorname{sinc}$ theory.
-      \item \textbf{Noise:} RT degrades gracefully; MUSIC is precision-first but collapses beyond a noise threshold. Computing with SVD seems less sensitive to noise.
-    \end{itemize}
+      \item \textbf{Noise:} RT degrades only in full aperture. MUSIC is precision-first but collapses beyond a noise threshold. Computing with SVD seems less sensitive to noise.
+    \end{itemize} 
   \end{tcolorbox}
-
+ 
 
   \begin{tcolorbox}[warnbox, title=Perspectives, top=2pt, bottom=2pt]
     \begin{itemize}[leftmargin=0.5em, label=\textbullet]\setlength\itemsep{1.5pt}
